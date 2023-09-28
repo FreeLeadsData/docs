@@ -101,9 +101,3 @@ While the node is
 the app may request an update to the node every `x` seconds.
 
 ![FreeLeadsData Protocol 1](./img/02-protocol-2.png)
-
-    #'daily_quota' => 400*1000*1000, # 400 million,
-    #'credits' => 50,
-    #'earning_per_verified_email' => 0.018,
-
-    'auto_drain' => false,
