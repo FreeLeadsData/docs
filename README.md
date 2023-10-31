@@ -37,8 +37,7 @@ The general architecture looks like this:
 
 Any search can be serialized with a `json` descriptor like below.
 
-For a full documentation of search descriptor, refer to this other document:
-_(pending)_
+For a full documentation of search descriptor, refer to [this document](./doc/1-serialization.md).
 
 ```ruby
 h = {
@@ -47,11 +46,6 @@ h = {
     'status' => true,
     'verify_email' => true, 
     'direct_phone_number_only' => false,
-
-    'keywords' => [
-        # keywords to include
-        { 'value' => '[company_name]', 'type' => 0 },
-    ],
 
     'job_titles' => [
         # job positions to include
@@ -102,8 +96,15 @@ the app may request an update to the node every `x` seconds.
 
 ![FreeLeadsData Protocol 1](./img/02-protocol-2.png)
 
-    #'daily_quota' => 400*1000*1000, # 400 million,
-    #'credits' => 50,
-    #'earning_per_verified_email' => 0.018,
+In the **pull request**, the node returns an array of all the searches that deserver to be updated at the app side.
 
-    'auto_drain' => false,
+The information pulled from the node is the statistics of the process, and the URL of the export file (the data).
+
+## 4. Events
+
+There are some events that make the app pushing a search to the node:
+
+- when the search is created (obviously);
+- when the search is updated;
+- when the accounts has new credits;
+- when the any other search of the same account has been just pulled (so the **credits** and **daily quota** such an account changed).
