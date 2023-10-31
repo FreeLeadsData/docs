@@ -11,7 +11,9 @@ _pending_
 ## States
 (badge_text, badge_color)
 
-## Auto-Drain
+## Drain
+
+
 
 ## Control Fields
 (dailyqQuota, credits, lookup value)

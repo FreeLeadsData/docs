@@ -108,3 +108,37 @@ There are some events that make the app pushing a search to the node:
 - when the search is updated;
 - when the accounts has new credits;
 - when the any other search of the same account has been just pulled (so the **credits** and **daily quota** such an account changed).
+
+## 5. Best Practices
+
+### 5.1. Select fields you are going to update only. 
+
+```ruby
+l.logs "Updating stats of #{id}... "
+s = BlackStack::MicroData::Zi::Search.select(
+    :id, :export_time, :export_download_url, :export_filename
+).where(:id=>id).first
+
+s..export(to, l) # ==> self.export_time = to
+l.logf 'done'.green
+```
+
+Other fields must being loaded by raw query.
+
+```ruby
+l.logs "Upload the file... "
+search_name = DB["SELECT name FROM zi_search WHERE id='#{self.id}'"].first[:name]
+cloud_filename = "#{search_name}.#{self.id}"
+res = BlackStack::DropBox.dropbox_upload_file(local_filename, "/#{DROPBOX_FOLDER}/#{cloud_filename}")
+l.done
+
+# set last export time
+s.export_time = now
+```
+
+So, you won't over-write fields that may be updated by another process.
+
+```ruby
+# update record
+s.save
+```
