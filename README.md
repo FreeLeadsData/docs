@@ -37,8 +37,7 @@ The general architecture looks like this:
 
 Any search can be serialized with a `json` descriptor like below.
 
-For a full documentation of search descriptor, refer to this other document:
-_(pending)_
+For a full documentation of search descriptor, refer to [this document](./doc/1-serialization.md).
 
 ```ruby
 h = {
@@ -47,11 +46,6 @@ h = {
     'status' => true,
     'verify_email' => true, 
     'direct_phone_number_only' => false,
-
-    'keywords' => [
-        # keywords to include
-        { 'value' => '[company_name]', 'type' => 0 },
-    ],
 
     'job_titles' => [
         # job positions to include
@@ -102,7 +96,50 @@ the app may request an update to the node every `x` seconds.
 
 ![FreeLeadsData Protocol 1](./img/02-protocol-2.png)
 
-## 4. Daily Quota
+## 4. Events
+
+There are some events that make the app pushing a search to the node:
+
+- when the search is created (obviously);
+- when the search is updated;
+- when the accounts has new credits;
+- when the any other search of the same account has been just pulled (so the **credits** and **daily quota** such an account changed).
+
+## 5. Best Practices
+
+### 5.1. Select fields you are going to update only. 
+
+```ruby
+l.logs "Updating stats of #{id}... "
+s = BlackStack::MicroData::Zi::Search.select(
+    :id, :export_time, :export_download_url, :export_filename
+).where(:id=>id).first
+
+s..export(to, l) # ==> self.export_time = to
+l.logf 'done'.green
+```
+
+Other fields must being loaded by raw query.
+
+```ruby
+l.logs "Upload the file... "
+search_name = DB["SELECT name FROM zi_search WHERE id='#{self.id}'"].first[:name]
+cloud_filename = "#{search_name}.#{self.id}"
+res = BlackStack::DropBox.dropbox_upload_file(local_filename, "/#{DROPBOX_FOLDER}/#{cloud_filename}")
+l.done
+
+# set last export time
+s.export_time = now
+```
+
+So, you won't over-write fields that may be updated by another process.
+
+```ruby
+# update record
+s.save
+```
+
+## 6. Daily Quota
 
 Instead my other database providers, **FreeLeadsData** is an infrastructure-intensive service that scrapes people directories, append their emails and other insights, and verify data information too.
 
@@ -110,3 +147,6 @@ For this reason, your balance cannot be all consumed in a short period of time.
 
 This article explains how your daily quota is calculated.
 
+In the **pull request**, the node returns an array of all the searches that deserver to be updated at the app side.
+
+The information pulled from the node is the statistics of the process, and the URL of the export file (the data).
