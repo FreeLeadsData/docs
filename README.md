@@ -101,3 +101,12 @@ While the node is
 the app may request an update to the node every `x` seconds.
 
 ![FreeLeadsData Protocol 1](./img/02-protocol-2.png)
+
+## 4. Daily Quota
+
+Instead my other database providers, **FreeLeadsData** is an infrastructure-intensive service that scrapes people directories, append their emails and other insights, and verify data information too.
+
+For this reason, your balance cannot be all consumed in a short period of time.
+
+This article explains how your daily quota is calculated.
+
