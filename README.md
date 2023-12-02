@@ -96,10 +96,6 @@ the app may request an update to the node every `x` seconds.
 
 ![FreeLeadsData Protocol 1](./img/02-protocol-2.png)
 
-In the **pull request**, the node returns an array of all the searches that deserver to be updated at the app side.
-
-The information pulled from the node is the statistics of the process, and the URL of the export file (the data).
-
 ## 4. Events
 
 There are some events that make the app pushing a search to the node:
@@ -142,3 +138,15 @@ So, you won't over-write fields that may be updated by another process.
 # update record
 s.save
 ```
+
+## 6. Daily Quota
+
+Instead my other database providers, **FreeLeadsData** is an infrastructure-intensive service that scrapes people directories, append their emails and other insights, and verify data information too.
+
+For this reason, your balance cannot be all consumed in a short period of time.
+
+This article explains how your daily quota is calculated.
+
+In the **pull request**, the node returns an array of all the searches that deserver to be updated at the app side.
+
+The information pulled from the node is the statistics of the process, and the URL of the export file (the data).
